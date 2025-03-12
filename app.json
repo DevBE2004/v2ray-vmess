@@ -1,29 +1,13 @@
 {
-    "name": "v2ray-render",
-    "description": "Deploy V2Ray to render",
-    "keywords": ["v2ray", "proxy"],
-    "env": {
-      "PROTOCOL": {
-        "description": "Choose vless or vmess",
-        "value": "vless"
-      },
+  "name": "xray-render",
+  "description": "deploy xray to render",
+  "keywords": ["xray"],
+  "env": {
       "UUID": {
-        "description": "V2Ray UUID",
-        "value": "36cfc3de-ecfd-4752-ae6f-8f0f92035143"
-      },
-      "PATH": {
-        "description": "Websocket path",
-        "value": "/v2ray"
-      },
-      "SERVER_NAME": {
-        "description": "Server name for TLS",
-        "value": "v2ray-vmess.onrender.com"
-      },
-      "PORT": {
-        "description": "Port for V2Ray (render requires dynamic port)",
-        "value": "$PORT"
+          "description": "xray UUID",
+          "value": "36cfc3de-ecfd-4752-ae6f-8f0f92035143"        
       }
-    },
-    "repository": "https://github.com/DevBE2004/xray",
-    "stack": "container"
-  }
+  },
+  "repository": "https://github.com/iamtrazy/xray-render",
+  "stack": "container"
+}
