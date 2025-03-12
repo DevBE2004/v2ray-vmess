@@ -19,6 +19,11 @@ cat << EOF > /etc/xray/config.json
       },
       "streamSettings": {
         "network": "tcp",
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "${SNI:-m.tiktok.com}",
+          "alpn": ["http/1.1"]
+        },
         "tcpSettings": {
           "header": {
             "type": "http",
@@ -46,5 +51,4 @@ cat << EOF > /etc/xray/config.json
 EOF
 
 # Run xray
-
 exec /usr/bin/xray -c /etc/xray/config.json
