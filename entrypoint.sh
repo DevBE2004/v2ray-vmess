@@ -1,9 +1,9 @@
 #!/bin/sh
 
-# Tạo thư mục cấu hình nếu chưa tồn tại
+# Create config directory if not exists
 mkdir -p /etc/v2ray
 
-# Tạo file cấu hình từ biến môi trường
+# Generate config file with environment variables
 rm -rf /etc/v2ray/config.json
 cat << EOF > /etc/v2ray/config.json
 {
@@ -53,5 +53,8 @@ cat << EOF > /etc/v2ray/config.json
 }
 EOF
 
-# Chạy v2ray với cấu hình
+# cấp quyền thực thi cho v2ray
+chmod +x /usr/bin/v2ray
+
+# Run v2ray with config
 exec /usr/bin/v2ray run -c /etc/v2ray/config.json
