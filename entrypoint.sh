@@ -3,7 +3,7 @@
 # Create config directory if not exists
 mkdir -p /etc/v2ray
 
-# Config v2ray
+# Generate config file with environment variables
 rm -rf /etc/v2ray/config.json
 cat << EOF > /etc/v2ray/config.json
 {
@@ -12,12 +12,12 @@ cat << EOF > /etc/v2ray/config.json
   },
   "inbounds": [
     {
-      "port": $PORT,
-      "protocol": "$PROTOCOL",
+      "port": ${PORT:-443},
+      "protocol": "${PROTOCOL:-vmess}",
       "settings": {
         "clients": [
           {
-            "id": "$UUID",
+            "id": "${UUID}",
             "alterId": 0
           }
         ],
@@ -26,7 +26,7 @@ cat << EOF > /etc/v2ray/config.json
       "streamSettings": {
         "network": "ws",
         "wsSettings": {
-          "path": "/"
+          "path": "${PATH:-/v2ray}"
         }
       }
     }
@@ -34,11 +34,19 @@ cat << EOF > /etc/v2ray/config.json
   "outbounds": [
     {
       "protocol": "freedom",
-      "settings": {}
+      "settings": {
+        "domainStrategy": "UseIP"
+      }
     }
-  ]
+  ],
+  "dns": {
+    "servers": [
+      "8.8.8.8",
+      "1.1.1.1"
+    ]
+  }
 }
 EOF
 
-# Run v2ray
-/usr/bin/v2ray -config /etc/v2ray/config.json
+# Run v2ray with config
+exec /usr/bin/v2ray run -c /etc/v2ray/config.json

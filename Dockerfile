@@ -1,5 +1,6 @@
-FROM v2ray/official
+FROM v2ray/official:latest
 ENV TZ=Asia/Colombo
-ADD entrypoint.sh /
+WORKDIR /etc/v2ray
+ADD entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
-CMD /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
