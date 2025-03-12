@@ -17,7 +17,7 @@ cat << EOF > /etc/v2ray/config.json
       "settings": {
         "clients": [
           {
-            "id": "${UUID}",
+            "id": "${UUID:-36cfc3de-ecfd-4752-ae6f-8f0f92035143}",
             "level": 0,
             "flow": "xtls-rprx-vision"
           }
@@ -28,7 +28,7 @@ cat << EOF > /etc/v2ray/config.json
         "network": "ws",
         "security": "tls",
         "tlsSettings": {
-          "serverName": "v2ray-vmess.onrender.com"
+          "serverName": "${SERVER_NAME:-v2ray-vmess.onrender.com}" 
         },
         "wsSettings": {
           "path": "${PATH:-/v2ray}"
@@ -53,8 +53,8 @@ cat << EOF > /etc/v2ray/config.json
 }
 EOF
 
-# cấp quyền thực thi cho v2ray
+# Grant execute permissions to the v2ray binary
 chmod +x /usr/bin/v2ray
 
-# Run v2ray with config
-exec /usr/bin/v2ray run -c /etc/v2ray/config.json
+# Run v2ray with the generated config
+exec /usr/bin/v2ray -config=/etc/v2ray/config.json
