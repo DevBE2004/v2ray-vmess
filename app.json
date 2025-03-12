@@ -1,0 +1,21 @@
+{
+    "name": "v2ray-heroku",
+    "description": "Deploy V2Ray to Heroku",
+    "keywords": ["v2ray", "proxy"],
+    "env": {
+        "PROTOCOL": {
+            "description": "Choose vless or vmess",
+            "value": "vmess"
+        },
+        "UUID": {
+            "description": "V2Ray UUID",
+            "value": "36cfc3de-ecfd-4752-ae6f-8f0f92035143"
+        },
+        "PATH": {
+            "description": "Websocket path",
+            "value": "/v2ray"
+        }
+    },
+    "repository": "https://github.com/DevBE2004/xray",
+    "stack": "container"
+}
