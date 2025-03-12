@@ -28,7 +28,7 @@ cat << EOF > /etc/v2ray/config.json
         "network": "ws",
         "security": "tls",
         "tlsSettings": {
-          "serverName": "m.tiktok.com"
+          "serverName": "v2ray-vmess.onrender.com"
         },
         "wsSettings": {
           "path": "${PATH:-/v2ray}"
