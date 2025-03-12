@@ -1,9 +1,9 @@
 #!/bin/sh
 
-# Create config directory if not exists
+# Tạo thư mục cấu hình nếu chưa tồn tại
 mkdir -p /etc/v2ray
 
-# Generate config file with environment variables
+# Tạo file cấu hình từ biến môi trường
 rm -rf /etc/v2ray/config.json
 cat << EOF > /etc/v2ray/config.json
 {
@@ -13,18 +13,23 @@ cat << EOF > /etc/v2ray/config.json
   "inbounds": [
     {
       "port": ${PORT:-443},
-      "protocol": "${PROTOCOL:-vmess}",
+      "protocol": "${PROTOCOL:-vless}",
       "settings": {
         "clients": [
           {
             "id": "${UUID}",
-            "alterId": 0
+            "level": 0,
+            "flow": "xtls-rprx-vision"
           }
         ],
         "decryption": "none"
       },
       "streamSettings": {
         "network": "ws",
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "m.tiktok.com"
+        },
         "wsSettings": {
           "path": "${PATH:-/v2ray}"
         }
@@ -48,5 +53,5 @@ cat << EOF > /etc/v2ray/config.json
 }
 EOF
 
-# Run v2ray with config
+# Chạy v2ray với cấu hình
 exec /usr/bin/v2ray run -c /etc/v2ray/config.json
