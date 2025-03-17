@@ -1,54 +1,90 @@
 #!/bin/sh
 
-# Config xray
-
+# Config xray client
 rm -rf /etc/xray/config.json
 cat << EOF > /etc/xray/config.json
 {
   "inbounds": [
     {
-      "port": ${PORT:-443},
-      "protocol": "vless",
+      "port": ${PORT:-1080},                    # Cổng SOCKS local, mặc định 1080
+      "protocol": "socks",
       "settings": {
-        "decryption": "none",
-        "clients": [
-          {
-            "id": "${UUID:-36cfc3de-ecfd-4752-ae6f-8f0f92035143}"
-          }
-        ]
+        "auth": "noauth",                      # Không yêu cầu xác thực
+        "udp": true,                           # Hỗ trợ UDP
+        "userLevel": 8
       },
-      "streamSettings": {
-        "network": "tcp",
-        "security": "tls",
-        "tlsSettings": {
-          "serverName": "${SNI:-m.tiktok.com}",
-          "alpn": ["http/1.1"]
-        },
-        "tcpSettings": {
-          "header": {
-            "type": "http",
-            "response": {
-              "version": "1.1",
-              "status": "200",
-              "reason": "OK",
-              "headers": {
-                "Content-Type": "text/plain",
-                "Connection": "keep-alive",
-                "Server": "Xray"
-              }
-            }
-          }
-        }
-      }
+      "sniffing": {
+        "destOverride": [],
+        "enabled": false,
+        "routeOnly": false
+      },
+      "tag": "socks-in"
     }
   ],
   "outbounds": [
     {
-      "protocol": "freedom"
+      "mux": {
+        "concurrency": -1,
+        "enabled": false
+      },
+      "protocol": "vmess",
+      "settings": {
+        "vnext": [
+          {
+            "address": "${ADDRESS:-v2ray-vmess.onrender.com}",  # Địa chỉ server VMess riêng, thay bằng địa chỉ của bạn
+            "port": ${VPORT:-443},                        # Cổng server VMess, mặc định 443
+            "users": [
+              {
+                "id": "${UUID:-36cfc3de-ecfd-4752-ae6f-8f0f92035143}",  # UUID riêng, thay bằng UUID của bạn
+                "level": 8,
+                "security": "auto"                  # Mã hóa tự động
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "ws",                          # Sử dụng WebSocket
+        "wsSettings": {
+          "headers": {
+            "Host": "${HOST:-m.youtube.com}"  # Header Host, thay bằng tên miền của bạn
+          },
+          "path": "${PATH:-/anhtu}"              # Đường dẫn WebSocket, thay nếu cần
+        }
+      },
+      "tag": "proxy"
+    },
+    {
+      "protocol": "freedom",
+      "settings": {
+        "domainStrategy": "UseIP"
+      },
+      "tag": "direct"
+    },
+    {
+      "protocol": "blackhole",
+      "settings": {
+        "response": {
+          "type": "http"
+        }
+      },
+      "tag": "block"
     }
-  ]
+  ],
+  "routing": {
+    "domainStrategy": "IPIfNonMatch",
+    "rules": [
+      {
+        "type": "field",
+        "outboundTag": "proxy"                    # Mọi lưu lượng đi qua proxy VMess
+      }
+    ]
+  },
+  "log": {
+    "loglevel": "warning"
+  }
 }
 EOF
 
-# Run xray
-exec /usr/bin/xray -c /etc/xray/config.json
+# Run xray client
+xray -c /etc/xray/config.json
