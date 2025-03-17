@@ -6,11 +6,11 @@ cat << EOF > /etc/xray/config.json
 {
   "inbounds": [
     {
-      "port": ${PORT:-1080},                    # Cổng SOCKS local, mặc định 1080
+      "port": ${PORT:-1080},                    # Cổng SOCKS local
       "protocol": "socks",
       "settings": {
-        "auth": "noauth",                      # Không yêu cầu xác thực
-        "udp": true,                           # Hỗ trợ UDP
+        "auth": "noauth",
+        "udp": true,
         "userLevel": 8
       },
       "sniffing": {
@@ -31,23 +31,27 @@ cat << EOF > /etc/xray/config.json
       "settings": {
         "vnext": [
           {
-            "address": "${ADDRESS:-ws-ecw0.onrender.com}",  # Địa chỉ server VMess
-            "port": ${VPORT:-443},                        # Cổng server VMess, mặc định 443
+            "address": "${ADDRESS:-ws-ecw0.onrender.com}",
+            "port": ${VPORT:-443},
             "users": [
               {
-                "id": "${UUID:-36cfc3de-ecfd-4752-ae6f-8f0f92035143}",  # UUID
+                "id": "${UUID:-36cfc3de-ecfd-4752-ae6f-8f0f92035143}",
                 "level": 8,
-                "security": "auto"                  # Mã hóa tự động
+                "security": "auto"
               }
             ]
           }
         ]
       },
       "streamSettings": {
-        "network": "ws",                          # Sử dụng WebSocket
+        "network": "ws",
+        "security": "tls",                     # Thêm TLS
+        "tlsSettings": {
+          "serverName": "ws-ecw0.onrender.com" # Domain của server
+        },
         "wsSettings": {
-          "host": "${HOST:-m.youtube.com}",       # Chuyển Host ra ngoài headers để tránh cảnh báo deprecated
-          "path": "${PATH:-/anhtu}"               # Đường dẫn WebSocket
+          "host": "${HOST:-m.youtube.com}",
+          "path": "${PATH:-/anhtu}"
         }
       },
       "tag": "proxy"
@@ -74,18 +78,18 @@ cat << EOF > /etc/xray/config.json
     "rules": [
       {
         "type": "field",
-        "outboundTag": "proxy",                 # Mọi lưu lượng TCP/UDP qua proxy
+        "outboundTag": "proxy",
         "network": "tcp,udp"
       },
       {
         "type": "field",
-        "outboundTag": "direct",                # IP nội bộ đi trực tiếp
+        "outboundTag": "direct",
         "ip": ["geoip:private"]
       }
     ]
   },
   "log": {
-    "loglevel": "warning"
+    "loglevel": "debug"                     # Đổi thành debug để xem lỗi chi tiết
   }
 }
 EOF
