@@ -31,7 +31,7 @@ cat << EOF > /etc/xray/config.json
       "settings": {
         "vnext": [
           {
-            "address": "${ADDRESS:-v2ray-vmess.onrender.com}",  # Địa chỉ server VMess
+            "address": "${ADDRESS:-ws-ecw0.onrender.com}",  # Địa chỉ server VMess
             "port": ${VPORT:-443},                        # Cổng server VMess, mặc định 443
             "users": [
               {
