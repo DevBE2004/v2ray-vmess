@@ -31,11 +31,11 @@ cat << EOF > /etc/xray/config.json
       "settings": {
         "vnext": [
           {
-            "address": "${ADDRESS:-v2ray-vmess.onrender.com}",  # Địa chỉ server VMess riêng, thay bằng địa chỉ của bạn
+            "address": "${ADDRESS:-v2ray-vmess.onrender.com}",  # Địa chỉ server VMess
             "port": ${VPORT:-443},                        # Cổng server VMess, mặc định 443
             "users": [
               {
-                "id": "${UUID:-36cfc3de-ecfd-4752-ae6f-8f0f92035143}",  # UUID riêng, thay bằng UUID của bạn
+                "id": "${UUID:-36cfc3de-ecfd-4752-ae6f-8f0f92035143}",  # UUID
                 "level": 8,
                 "security": "auto"                  # Mã hóa tự động
               }
@@ -46,10 +46,8 @@ cat << EOF > /etc/xray/config.json
       "streamSettings": {
         "network": "ws",                          # Sử dụng WebSocket
         "wsSettings": {
-          "headers": {
-            "Host": "${HOST:-m.youtube.com}"  # Header Host, thay bằng tên miền của bạn
-          },
-          "path": "${PATH:-/anhtu}"              # Đường dẫn WebSocket, thay nếu cần
+          "host": "${HOST:-m.youtube.com}",       # Chuyển Host ra ngoài headers để tránh cảnh báo deprecated
+          "path": "${PATH:-/anhtu}"               # Đường dẫn WebSocket
         }
       },
       "tag": "proxy"
@@ -76,7 +74,13 @@ cat << EOF > /etc/xray/config.json
     "rules": [
       {
         "type": "field",
-        "outboundTag": "proxy"                    # Mọi lưu lượng đi qua proxy VMess
+        "outboundTag": "proxy",                 # Mọi lưu lượng TCP/UDP qua proxy
+        "network": "tcp,udp"
+      },
+      {
+        "type": "field",
+        "outboundTag": "direct",                # IP nội bộ đi trực tiếp
+        "ip": ["geoip:private"]
       }
     ]
   },
